@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 094d461626e62b942bebc5a6ff5228fe
+timeCreated: 1549321758
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Adore64
+  fontNames:
+  - Adore64
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
