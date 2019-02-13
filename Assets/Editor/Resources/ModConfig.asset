@@ -13,7 +13,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: forgetThis
   title: Forget This
-  description: 
-  version: 0.0.0.1
+  description: 'Forget This v1.01
+
+    Remembering one digit and not ten makes it ten times easier!
+
+
+    Module ID: forgetThis
+
+
+    Manual is available at https://ktane.timwi.de/HTML/Forget%20This.html'
+  version: 1.01
   outputFolder: build
   previewImage: {fileID: 2800000, guid: eaf73694741825546b0b4f827342932f, type: 3}
