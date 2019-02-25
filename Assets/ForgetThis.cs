@@ -32,6 +32,7 @@ public class ForgetThis : MonoBehaviour
         "Forget This",
         "Forget Me Not",
         "Forget Everything",
+        "Purgatory",
         "Turn The Key",
         "Souvenir",
         "The Time Keeper",
@@ -50,12 +51,12 @@ public class ForgetThis : MonoBehaviour
       "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
     };
 
-    string[] lightColors = new string[5]
+    string[] lightColors = new string[6]
     {
-        "Cyan", "Magenta", "Yellow", "Black", "White"
+        "Cyan", "Magenta", "Yellow", "Black", "White", "Green"
     };
 
-    Color[] colory = { new Color(0.0f, 1f, 1f), new Color(1f, 0f, 1f), new Color(1f, 1f, 0f), new Color(0f, 0f, 0f), new Color(1f, 1f, 1f) };
+    Color[] colory = { new Color(0.0f, 1f, 1f), new Color(1f, 0f, 1f), new Color(1f, 1f, 0f), new Color(0f, 0f, 0f), new Color(1f, 1f, 1f), new Color(0f, 1f, 0f) };
 
     List<int> stageNumbers = new List<int>();
     List<int> stageColors = new List<int>();
@@ -103,6 +104,12 @@ public class ForgetThis : MonoBehaviour
         inputDisplay.GetComponentInChildren<TextMesh>().text = "";
 
         numSolvables = Bomb.GetSolvableModuleNames().Where(x => !listF.Contains(x)).Count() + extraz;
+        //Debug.Log(Bomb.GetSolvableModuleNames().Where(x => !listF.Contains(x)).ToString());
+        //Debug.Log(Bomb.GetSolvableModuleNames());
+        //var xxxxx = String.Join(", ", Bomb.GetSolvableModuleNames());
+        Debug.Log("Solviez " + String.Join(", ", Bomb.GetSolvableModuleNames().ToArray()));
+
+
         // debug numSolvables = 7;
         if (numSolvables < 2)
         {
@@ -277,6 +284,8 @@ public class ForgetThis : MonoBehaviour
                     canPress = false;
                     canSolve = false;
                     isSolved = true;
+                    LED.material.color = colory[5];
+                    theLight.color = colory[5];
                     Debug.LogFormat("[Forget This #{0}] Input of {1} and the final result {2} match, you didn't forget it! Module disarmed!", _moduleId,
                         theValues[curAnswer], theValues[theSolution]);
                     for (int i = 0; i < 5; i++)
@@ -476,48 +485,10 @@ public class ForgetThis : MonoBehaviour
                 && !(curStageNum == numSolvables))
             {
                 newIncrement = true;
+                timeX = 2;
             }
         }
-        /*
-        if ((Bomb.GetSolvedModuleNames().Where(x => !listM.Contains(x)).Count() + extraz + 1) - curStageNum == 1)
-        {
-            if (!newIncrement)
-            {
-                doNextStage();
-            }
-
-            newIncrement = false; //reset the flag to false
-        }
-        else
-        {
-            if (!newIncrement)
-            {
-                doNextStage();
-            }
-            newIncrement = true; // otherwise we have a new incrementy thing
-            timeX = 2;
-        }
-    }
-            else
-            {
-                newIncrement = false;
-                timeX = 0; */
-
-        //check to see if the number of modules solved increased
-
-
-
-
-        /////////////////////////////////
-        ///
-
-        //////////////////////////////////
-
-
-
-
-
-
+        
         tix++;
         if (tix == 85)
         {
@@ -812,12 +783,12 @@ public class ForgetThis : MonoBehaviour
             if ((stageColors[finalStage[i] - 1] + 2) % 5 == stageColors[finalStage[i] - 2])
             {
 
-                coolString = coolString + "Don't do anything here!";
+                coolString = coolString + "Don't do anything here! The solution stays at " + theValues[theSolution] + " (worth " + theSolution + " in decimal).";
                 //loggy thing
             }
             else
             {
-                coolString = coolString + "Solution so far is " + theValues[theSolution] + " (worth " + theSolution + "). ";
+                coolString = coolString + "Solution so far is " + theValues[theSolution] + " (worth " + theSolution + " in decimal). ";
                 switch (stageColors[finalStage[i] - 1])
                 {
                     case 0:     //cyan
@@ -868,8 +839,8 @@ public class ForgetThis : MonoBehaviour
             canPress = false;
             isSolved = true;
             theLight.enabled = true;
-            LED.material.color = colory[0];
-            theLight.color = colory[0];
+            LED.material.color = colory[5];
+            theLight.color = colory[5];
         }
         else
         {
