@@ -37,7 +37,7 @@ public class ForgetThis : MonoBehaviour
         "Souvenir",
         "The Stare",
         "The Time Keeper",
-        "Timing is Everything!",
+        "Timing Is Everything",
         "Simon's Stages",
     };
 
@@ -109,7 +109,7 @@ public class ForgetThis : MonoBehaviour
         //Debug.Log(Bomb.GetSolvableModuleNames().Where(x => !listF.Contains(x)).ToString());
         //Debug.Log(Bomb.GetSolvableModuleNames());
         //var xxxxx = String.Join(", ", Bomb.GetSolvableModuleNames());
-        Debug.Log("Solviez " + String.Join(", ", Bomb.GetSolvableModuleNames().ToArray()));
+        //Debug.Log("Solviez " + String.Join(", ", Bomb.GetSolvableModuleNames().ToArray()));
 
 
         // debug numSolvables = 7;
