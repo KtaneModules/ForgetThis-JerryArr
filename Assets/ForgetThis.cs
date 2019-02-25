@@ -35,7 +35,9 @@ public class ForgetThis : MonoBehaviour
         "Purgatory",
         "Turn The Key",
         "Souvenir",
+        "The Stare",
         "The Time Keeper",
+        "Timing is Everything!",
         "Simon's Stages",
     };
 
