@@ -1,1 +1,1 @@
-# ForgetThis
+#[ModKit Wiki](../../wiki)

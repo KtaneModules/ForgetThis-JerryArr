@@ -11,6 +11,7 @@ public class ForgetThis : MonoBehaviour
     public KMAudio Audio;
     public KMBombModule Module;
     public Light theLight;
+    public KMBossModule BossModule;
 
     public MeshRenderer[] stageDisplay;
     public MeshRenderer inputDisplay;
@@ -27,24 +28,15 @@ public class ForgetThis : MonoBehaviour
     private bool colorblindModeEnabled;
     public KMColorblindMode colorblindMode;
 
-    public static readonly string[] listF = { 
-        "Alchemy",
-        "Forget This",
-        "Forget Me Not",
-        "Forget Everything",
-        "Purgatory",
-        "Turn The Key",
-        "Souvenir",
-        "The Stare",
-        "The Time Keeper",
-        "Timing Is Everything",
-        "Simon's Stages",
-    };
+    public static readonly string[] listFDefault = @"Alchemy,Cookie Jars,Forget Everything,Forget Me Not,Forget This,Purgatory,Simon's Stages,Souvenir,The Time Keeper,Timing is Everything,Turn The Key".Split(',');
+                                                     
 
     int extraz = 0;
     int tix = 0;
     int modulesFun;
     int tpTicks = 0;
+
+    private string[] listF;
 
     string[] theValues = new string[36]
     {
@@ -62,7 +54,7 @@ public class ForgetThis : MonoBehaviour
 
     List<int> stageNumbers = new List<int>();
     List<int> stageColors = new List<int>();
-   
+
 
     bool canPress = true;
     bool autoSolved = false;
@@ -80,6 +72,8 @@ public class ForgetThis : MonoBehaviour
     int curRotation = 0;
     int theSolution = 0;
 
+    
+
     int[] finalStage = new int[5]
     {
         0, 0, 0, 0, 0
@@ -89,7 +83,8 @@ public class ForgetThis : MonoBehaviour
     {
         _moduleId = _moduleIdCounter++;
         colorblindModeEnabled = colorblindMode.ColorblindModeActive;
-
+        listF = BossModule.GetIgnoredModules(Module, listFDefault);
+        Debug.LogFormat("[Forget This #{0}] Ignored modules = {1}", _moduleId, listF.Join(", "));
         Init();
         canPress = true;
         float scalar = transform.lossyScale.x;
