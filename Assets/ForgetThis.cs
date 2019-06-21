@@ -67,7 +67,7 @@ public class ForgetThis : MonoBehaviour
     float timeX = 0;
     int curStageNum = 0;
     int numSolvables = 0;
-    string coolString = "Stage roll call: ";
+    string coolString = "Stage roll call, in groups of five: ";
     int curAnswer = 0;
     int curRotation = 0;
     int theSolution = 0;
@@ -84,7 +84,6 @@ public class ForgetThis : MonoBehaviour
         _moduleId = _moduleIdCounter++;
         colorblindModeEnabled = colorblindMode.ColorblindModeActive;
         listF = BossModule.GetIgnoredModules(Module, listFDefault);
-        Debug.LogFormat("[Forget This #{0}] Ignored modules = {1}", _moduleId, listF.Join(", "));
         Init();
         canPress = true;
         float scalar = transform.lossyScale.x;
@@ -107,7 +106,7 @@ public class ForgetThis : MonoBehaviour
         //Debug.Log("Solviez " + String.Join(", ", Bomb.GetSolvableModuleNames().ToArray()));
 
 
-        // debug numSolvables = 7;
+        //numSolvables = 57; //debug
         if (numSolvables < 2)
         {
             Debug.LogFormat("[Forget This #{0}] Auto-solving, not enough non-List F modules exist (need 2 or more)", _moduleId);
@@ -116,19 +115,21 @@ public class ForgetThis : MonoBehaviour
         }
         else
         {
+            Debug.LogFormat("[Forget This #{0}] {1} (Row C is the first letter of the stage's color, V is the stage's value)", _moduleId, coolString);
             for (int i = 1; i <= numSolvables; i++)
             {
-                var iZero = i - 1;
+                //var iZero = i - 1;
                 stageNumbers.Add(UnityEngine.Random.Range(0, 36));
                 stageColors.Add(UnityEngine.Random.Range(0, 5));
                 if (numSolvables == i)
                 {
-                    coolString = coolString + "and " + i + " is " + lightColors[(int)stageColors[iZero]] + " " + theValues[(int)stageNumbers[iZero]] + " (worth " + stageNumbers[iZero] + ").";
+                    //coolString = coolString + "and " + i + " is " + lightColors[(int)stageColors[iZero]] + " " + theValues[(int)stageNumbers[iZero]] + " (worth " + stageNumbers[iZero] + ").";
                 }
                 else
                 { 
-                    coolString = coolString + i + " is " + lightColors[(int)stageColors[iZero]] + " " + theValues[(int)stageNumbers[iZero]] + " (worth " + stageNumbers[iZero] + "), ";
+                    //coolString = coolString + i + " is " + lightColors[(int)stageColors[iZero]] + " " + theValues[(int)stageNumbers[iZero]] + " (worth " + stageNumbers[iZero] + "), ";
                 }
+
             }
             //numSolvables = 7;
             if (numSolvables > 5)
@@ -163,8 +164,52 @@ public class ForgetThis : MonoBehaviour
                 finalStage[3] = UnityEngine.Random.Range(2, 1 + numSolvables);
                 finalStage[4] = UnityEngine.Random.Range(2, 1 + numSolvables);
             }
-            Debug.LogFormat("[Forget This #{0}] {1}", _moduleId, coolString);
-            Debug.LogFormat("[Forget This #{0}] Final stages, in order: {1}, {2}, {3}, {4}, and {5}.", _moduleId, finalStage[0], finalStage[1],
+            var twenties = (int)(numSolvables / 20);
+            var numberGroup = "";
+            var colorGroup = "";
+            var tN = 0;
+            var unitNum = 0;
+            
+            for (tN = 0; tN < twenties; tN++)
+            {
+                for (unitNum = 0; unitNum < 20; unitNum++)
+                {
+                    numberGroup = numberGroup + theValues[stageNumbers[(tN * 20) + unitNum]];
+                    colorGroup = colorGroup + lightColors[stageColors[(tN * 20) + unitNum]].Substring(0, 1);
+                    if (unitNum > 0 && unitNum % 5 == 4)
+                    {
+                        numberGroup = numberGroup + " ";
+                        colorGroup = colorGroup + " ";
+                    }
+                }
+
+                //Debug.LogFormat("{1}", _moduleId, colorGroup);
+
+                Debug.LogFormat("[Forget This #{0}] Stages {1} to {2}", _moduleId, 1 + (20 * tN), 20 + (20 * tN));
+                Debug.LogFormat("[Forget This #{0}] C: {1}", _moduleId, colorGroup);
+                Debug.LogFormat("[Forget This #{0}] V: {1}", _moduleId, numberGroup);
+                Debug.LogFormat("[Forget This #{0}]", _moduleId);
+                numberGroup = "";
+                colorGroup = "";
+            }
+            for (unitNum = 0; unitNum < (numSolvables - (20 * (int)(numSolvables / 20))); unitNum++)
+            {
+                numberGroup = numberGroup + theValues[stageNumbers[(tN * 20) + unitNum]];
+                colorGroup = colorGroup + lightColors[stageColors[(tN * 20) + unitNum]].Substring(0, 1);
+                if (unitNum > 0 && unitNum % 5 == 4)
+                {
+                    numberGroup = numberGroup + " ";
+                    colorGroup = colorGroup + " ";
+                }
+            }
+
+            Debug.LogFormat("[Forget This #{0}] Stages {1} to {2}", _moduleId, 1 + (20 * tN), unitNum + (20 * tN));
+            Debug.LogFormat("[Forget This #{0}] C: {1}", _moduleId, colorGroup);
+            Debug.LogFormat("[Forget This #{0}] V: {1}", _moduleId, numberGroup);
+            Debug.LogFormat("[Forget This #{0}]", _moduleId);
+            numberGroup = "";
+            colorGroup = "";
+            Debug.LogFormat("[Forget This #{0}] Stages to implement, in the order in which they should be implemented: {1}, {2}, {3}, {4}, and {5}.", _moduleId, finalStage[0], finalStage[1],
                 finalStage[2], finalStage[3], finalStage[4]);
             doSolution();
         }
@@ -353,7 +398,7 @@ public class ForgetThis : MonoBehaviour
                     finalStage[3] = UnityEngine.Random.Range(2, 1 + numSolvables);
                     finalStage[4] = UnityEngine.Random.Range(2, 1 + numSolvables);
                 }
-                Debug.LogFormat("[Forget This #{0}] Final stages, in order: {1}, {2}, {3}, {4}, and {5}.", _moduleId, finalStage[0], finalStage[1],
+                Debug.LogFormat("[Forget This #{0}] Stages to implement, in the order in which they should be implemented: {1}, {2}, {3}, {4}, and {5}.", _moduleId, finalStage[0], finalStage[1],
                     finalStage[2], finalStage[3], finalStage[4]);
                 doSolution();
                 curAnswer = UnityEngine.Random.Range(0, 36);
@@ -771,46 +816,53 @@ public class ForgetThis : MonoBehaviour
     void doSolution()
     {
         theSolution = stageNumbers[0];
+
+        Debug.LogFormat("[Forget This #{0}] Starting with Stage 1's value of {1}. Pointy brackets indicated decimal values, e.g. <{2}>.", _moduleId, theValues[stageNumbers[0]], stageNumbers[0]);
         for (int i = 0; i < 5; i++)
         { //i = 2, sol = 11
-            coolString = "Doing stage #" + finalStage[i] + "...";
+            coolString = "Stage #" + finalStage[i] + "...";
             //finalStage[2] = 8
-            coolString = coolString + " Current stage color = " + lightColors[stageColors[finalStage[i] - 1]] + " and last stage color was " + lightColors[stageColors[finalStage[i] - 2]] + ". ";
+            coolString = coolString + " Stage color is " + lightColors[stageColors[finalStage[i] - 1]] + " and last stage color was " + lightColors[stageColors[finalStage[i] - 2]] + ". ";
             
             if ((stageColors[finalStage[i] - 1] + 2) % 5 == stageColors[finalStage[i] - 2])
             {
 
-                coolString = coolString + "Don't do anything here! The solution stays at " + theValues[theSolution] + " (worth " + theSolution + " in decimal).";
+                coolString = coolString + "Don't do anything here! The solution stays at " + theValues[theSolution] + " <" + theSolution + ">.";
                 //loggy thing
             }
             else
             {
-                coolString = coolString + "Solution so far is " + theValues[theSolution] + " (worth " + theSolution + " in decimal). ";
+                coolString = coolString + "Solution so far is " + theValues[theSolution] + " <" + theSolution + ">. ";
                 switch (stageColors[finalStage[i] - 1])
                 {
                     case 0:     //cyan
-                        coolString = coolString + "Add " + theValues[stageNumbers[finalStage[i] - 1]] + " (" + stageNumbers[finalStage[i] - 1] + " in decimal).";
+                        coolString = coolString + "Add " + theValues[stageNumbers[finalStage[i] - 1]] + " <" + stageNumbers[finalStage[i] - 1] + "> to get <" + 
+                            (theSolution + stageNumbers[finalStage[i] - 1]) + ">.";
                         theSolution = theSolution + stageNumbers[finalStage[i] - 1];
                         break;
                     case 1:     //magenta
-                        coolString = coolString + "Add half of " + theValues[stageNumbers[finalStage[i] - 1]] + " (" + stageNumbers[finalStage[i] - 1] + ") rounded down, or " + stageNumbers[finalStage[i] - 1] / 2 + " in decimal.";
+                        coolString = coolString + "Add (half of " + theValues[stageNumbers[finalStage[i] - 1]] + " <" + stageNumbers[finalStage[i] - 1] + "> rounded down, or <" +
+                            stageNumbers[finalStage[i] - 1] / 2 + ">), to get <" + (theSolution + (int)(stageNumbers[finalStage[i] - 1] / 2)) + ">.";
                         theSolution = theSolution + (int)(stageNumbers[finalStage[i] - 1] / 2);
                         break;
                     case 2:     //yellow
-                        coolString = coolString + "Add double " + theValues[stageNumbers[finalStage[i] - 1]] + " (" + stageNumbers[finalStage[i] - 1] + "), or " + stageNumbers[finalStage[i] - 1] * 2 + " in decimal.";
+                        coolString = coolString + "Add (double " + theValues[stageNumbers[finalStage[i] - 1]] + " <" + stageNumbers[finalStage[i] - 1] + ">, or <" 
+                            + stageNumbers[finalStage[i] - 1] * 2 + ">), to get <" + (theSolution + (stageNumbers[finalStage[i] - 1] * 2)) + ">.";
                         theSolution = theSolution + (stageNumbers[finalStage[i] - 1] * 2);
                         break;
                     case 3:     //black
-                        coolString = coolString + "Average with " + theValues[stageNumbers[finalStage[i] - 1]] + " (" + stageNumbers[finalStage[i] - 1] + " in decimal), rounding up.";
+                        coolString = coolString + "Average with " + theValues[stageNumbers[finalStage[i] - 1]] + " <" + stageNumbers[finalStage[i] - 1] + ">, rounding up, to get ";
                         theSolution = theSolution + stageNumbers[finalStage[i] - 1];
                         if (theSolution % 2 == 1)
                         {
                             theSolution++;
                         }
                         theSolution = theSolution / 2;
+                        coolString = coolString + "<" + theSolution + ">.";
                         break;
                     case 4:     //white
-                        coolString = coolString + "Subtract " + theValues[stageNumbers[finalStage[i] - 1]] + " (" + stageNumbers[finalStage[i] - 1] + " in decimal).";
+                        coolString = coolString + "Subtract " + theValues[stageNumbers[finalStage[i] - 1]] + " <" + stageNumbers[finalStage[i] - 1] + "> to get <" + 
+                            (theSolution - stageNumbers[finalStage[i] - 1]) + ">.";
                         theSolution = theSolution - stageNumbers[finalStage[i] - 1];
                         break;
                     default:    //uh oh
@@ -819,13 +871,23 @@ public class ForgetThis : MonoBehaviour
                 if (theSolution < 0)
                 {
                     theSolution += 36;
+                    coolString = coolString + " This is negative, so add <36> to get <" + theSolution + "> or " + theValues[theSolution] + ".";
                 }
-                theSolution = theSolution % 36;
+                else if (theSolution > 35)
+                {
+
+                    coolString = coolString + " This is 10 <36> or higher, so take <" + theSolution + "> mod <36> to get <" + theSolution % 36 + "> or " + theValues[theSolution % 36] + ".";
+                    theSolution = theSolution % 36;
+                }
+                else
+                {
+                    coolString = coolString + " This is " + theValues[theSolution] + " is base 36.";
+                }
             }
 
             Debug.LogFormat("[Forget This #{0}] {1}", _moduleId, coolString);
         }
-            Debug.LogFormat("[Forget This #{0}] The solution should be {1}", _moduleId, theValues[theSolution]);
+            Debug.LogFormat("[Forget This #{0}] The solution should be {1} <{2}>", _moduleId, theValues[theSolution], theSolution);
     }
 
     void doActivationStuff()
