@@ -28,11 +28,11 @@ public class ButtonMasherModule : MonoBehaviour
 
         string timerText = BombInfo.GetFormattedTime();
 
-        if (currentCount < 50 && timerText.Contains("4"))
+        if (currentCount < 1)
         {
             currentCount++;
 
-            if (currentCount == 50)
+            if (currentCount == 1)
             {
                 BombModule.HandlePass();
             }

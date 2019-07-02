@@ -72,7 +72,7 @@ public class ForgetThis : MonoBehaviour
     int curRotation = 0;
     int theSolution = 0;
 
-    
+    int curSolved = -1;
 
     int[] finalStage = new int[5]
     {
@@ -98,7 +98,7 @@ public class ForgetThis : MonoBehaviour
             stageDisplay[i].GetComponentInChildren<TextMesh>().text = "";
         }
         inputDisplay.GetComponentInChildren<TextMesh>().text = "";
-
+        curSolved = 0;
         numSolvables = Bomb.GetSolvableModuleNames().Where(x => !listF.Contains(x)).Count() + extraz;
         //Debug.Log(Bomb.GetSolvableModuleNames().Where(x => !listF.Contains(x)).ToString());
         //Debug.Log(Bomb.GetSolvableModuleNames());
@@ -435,66 +435,85 @@ public class ForgetThis : MonoBehaviour
 
     void doNextStage()
     {
-        if (curStageNum == numSolvables && !canSolve) // Ready to solve!
+        if (!isSolved)
         {
-            curAnswer = UnityEngine.Random.Range(0, 36);
-            inputDisplay.GetComponentInChildren<TextMesh>().text = theValues[curAnswer];
-            LED.material.color = colory[4];
-            theLight.color = colory[4];
-            if (colorblindModeEnabled)
+            //Debug.LogFormat("[Forget This #{0}] curStageNum is {1} and new numSolvables is {2}.", _moduleId, curStageNum, numSolvables);
+            //Debug.LogFormat("[Forget This #{0}] canSolve is {1}.", _moduleId, canSolve);
+            if (curStageNum == numSolvables && !canSolve && !isSolved) // Ready to solve!
             {
-                cbmColor.GetComponentInChildren<TextMesh>().text = "";
-            }
-            for (int i = 0; i < 5; i++)
-            {
-                if (finalStage[i] < 10)
+                curAnswer = UnityEngine.Random.Range(0, 36);
+                inputDisplay.GetComponentInChildren<TextMesh>().text = theValues[curAnswer];
+                LED.material.color = colory[5];
+                theLight.color = colory[5];
+                if (colorblindModeEnabled)
                 {
-                    stageDisplay[i].GetComponentInChildren<TextMesh>().text = "00" + finalStage[i];
+                    cbmColor.GetComponentInChildren<TextMesh>().text = "";
                 }
-                else if (finalStage[i] < 100)
+                for (int i = 0; i < 5; i++)
                 {
-                    stageDisplay[i].GetComponentInChildren<TextMesh>().text = "0" + finalStage[i];
+                    if (finalStage[i] < 10)
+                    {
+                        stageDisplay[i].GetComponentInChildren<TextMesh>().text = "00" + finalStage[i];
+                    }
+                    else if (finalStage[i] < 100)
+                    {
+                        stageDisplay[i].GetComponentInChildren<TextMesh>().text = "0" + finalStage[i];
+                    }
+                    else
+                    {
+                        stageDisplay[i].GetComponentInChildren<TextMesh>().text = "" + finalStage[i];
+                    }
                 }
-                else
-                {
-                    stageDisplay[i].GetComponentInChildren<TextMesh>().text = "" + finalStage[i];
-                }
-            }
-            canSolve = true;
-            doRotate = false;
-            newIncrement = false;
-            timeX = 0;
-        }
-        else
-        {
-            curStageNum++;
-            LED.material.color = colory[stageColors[curStageNum - 1]];
-            theLight.color = colory[stageColors[curStageNum - 1]];
-            if (colorblindModeEnabled)
-            {
-                cbmColor.GetComponentInChildren<TextMesh>().text = lightColors[stageColors[curStageNum - 1]].Substring(0, 1);
-            }
-            if (curStageNum < 10)
-            {
-                stageDisplay[0].GetComponentInChildren<TextMesh>().text = "00" + curStageNum;
-            }
-            else if (curStageNum < 100)
-            {
-                stageDisplay[0].GetComponentInChildren<TextMesh>().text = "0" + curStageNum;
+                canSolve = true;
+                doRotate = false;
+                newIncrement = false;
+                timeX = 0;
             }
             else
             {
-                stageDisplay[0].GetComponentInChildren<TextMesh>().text = "" + curStageNum;
+                curStageNum++;
+                //Debug.LogFormat("[Forget This #{0}] adding one to curStageNum and it is now {1} and SolveCount is still {2}.", _moduleId, curStageNum, curSolved);
+                if (!canSolve && !isSolved)
+                {
+                    stageDisplay[2].GetComponentInChildren<TextMesh>().text = "" + (curSolved + 1 - curStageNum);
+                }
+                LED.material.color = colory[stageColors[curStageNum - 1]];
+                theLight.color = colory[stageColors[curStageNum - 1]];
+                if (colorblindModeEnabled)
+                {
+                    cbmColor.GetComponentInChildren<TextMesh>().text = lightColors[stageColors[curStageNum - 1]].Substring(0, 1);
+                }
+                if (curStageNum < 10)
+                {
+                    stageDisplay[0].GetComponentInChildren<TextMesh>().text = "00" + curStageNum;
+                }
+                else if (curStageNum < 100)
+                {
+                    stageDisplay[0].GetComponentInChildren<TextMesh>().text = "0" + curStageNum;
+                }
+                else
+                {
+                    stageDisplay[0].GetComponentInChildren<TextMesh>().text = "" + curStageNum;
+                }
+
+                stageDisplay[4].GetComponentInChildren<TextMesh>().text = " " + theValues[stageNumbers[curStageNum - 1]] + " ";
             }
-            
-            stageDisplay[4].GetComponentInChildren<TextMesh>().text = " " + theValues[stageNumbers[curStageNum - 1]] + " ";
         }
+       
 
     }
 
     void FixedUpdate()
     {
-        if (newIncrement && !(curStageNum == Bomb.GetSolvedModuleNames().Where(x => !listF.Contains(x)).Count() + extraz + 1))
+        curSolved = Bomb.GetSolvedModuleNames().Where(x => !listF.Contains(x)).Count();
+
+
+
+
+
+
+
+        if (newIncrement && !(curStageNum == curSolved + 1) && !canSolve && !isSolved && !doRotate && !justAfterStrike)
         {
             if (timeX > 0)
             {
@@ -508,7 +527,7 @@ public class ForgetThis : MonoBehaviour
             {
                 timeX = 2;
                 doNextStage();
-                if ((Bomb.GetSolvedModuleNames().Where(x => !listF.Contains(x)).Count() + extraz + 1) - curStageNum > 0)
+                if (curStageNum == curSolved + 1)
                 {
                     timeX = 0;
                     newIncrement = false;
@@ -523,15 +542,46 @@ public class ForgetThis : MonoBehaviour
         }
         else
         {
+            if (curStageNum < curSolved + 1 && curSolved > 0 && !canSolve && !isSolved && !doRotate && !justAfterStrike)
+            {
+                timeX = 2;
+                newIncrement = true;
+                //Debug.LogFormat("[Forget This #{0}] newIncrement is {1} and curStageNum is {2} and curSolved is {3} .", _moduleId, newIncrement, curStageNum, curSolved);
+                if (!canSolve && !isSolved && !doRotate && !justAfterStrike)
+                {
+                    stageDisplay[2].GetComponentInChildren<TextMesh>().text = "" + (curSolved + 1 - curStageNum);
+                }
+            }
+
+
+            /*
             if (curStageNum < Bomb.GetSolvedModuleNames().Where(x => !listF.Contains(x)).Count() + extraz + 1 && Bomb.GetSolvedModuleNames().Where(x => !listF.Contains(x)).Count() > 0
                 && !(curStageNum == numSolvables))
             {
+                Debug.LogFormat("[Forget This #{0}] Detected solves. curStageNum is {1} and new SolveCount is {2}.", _moduleId, curStageNum,
+                    Bomb.GetSolvedModuleNames().Where(x => !listF.Contains(x)).Count() + extraz + 1);
+                stageDisplay[2].GetComponentInChildren<TextMesh>().text = "" + (Bomb.GetSolvedModuleNames().Where(x => !listF.Contains(x)).Count() + extraz + 1 - curStageNum);
+
+
                 newIncrement = true;
                 timeX = 2;
-            }
+            }*/
         }
         
         tix++;
+        if (canSolve && !isSolved)
+        {
+            if (tix > 41)
+            {
+                LED.material.color = colory[5];
+                theLight.color = colory[5];
+            }
+            else
+            {
+                LED.material.color = colory[3];
+                theLight.color = colory[3];
+            }
+        }
         if (tix == 85)
         {
             tix = 0;
@@ -567,7 +617,7 @@ public class ForgetThis : MonoBehaviour
             }
             else
             {
-                
+
 
             }
         }
@@ -907,7 +957,7 @@ public class ForgetThis : MonoBehaviour
             theLight.enabled = true;
             LED.material.color = colory[stageColors[0]];
             theLight.color = colory[stageColors[0]];
-            
+
             stageDisplay[0].GetComponentInChildren<TextMesh>().text = "001";
             stageDisplay[4].GetComponentInChildren<TextMesh>().text = " " + theValues[stageNumbers[0]] + " ";
             if (colorblindModeEnabled)
