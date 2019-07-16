@@ -28,7 +28,7 @@ public class ForgetThis : MonoBehaviour
     private bool colorblindModeEnabled;
     public KMColorblindMode colorblindMode;
 
-    public static readonly string[] listFDefault = @"Alchemy,Cookie Jars,Forget Everything,Forget Me Not,Forget This,Purgatory,Simon's Stages,Souvenir,The Time Keeper,Timing is Everything,Turn The Key".Split(',');
+    public static readonly string[] listFDefault = @"Forget Enigma,Forget Everything,Forget Infinity,Forget Me Not,Forget Them All,Forget This,Four-Card Monte,Purgatory,Simon's Stages,Souvenir,Tallordered Keys,The Time Keeper,Timing is Everything,Turn The Key".Split(',');
                                                      
 
     int extraz = 0;
@@ -867,7 +867,7 @@ public class ForgetThis : MonoBehaviour
     {
         theSolution = stageNumbers[0];
 
-        Debug.LogFormat("[Forget This #{0}] Starting with Stage 1's value of {1}. Pointy brackets indicated decimal values, e.g. <{2}>.", _moduleId, theValues[stageNumbers[0]], stageNumbers[0]);
+        Debug.LogFormat("[Forget This #{0}] Starting with Stage 1's value of {1}. Pointy brackets indicated decimal values, e.g. {1} is equal to <{2}>.", _moduleId, theValues[stageNumbers[0]], stageNumbers[0]);
         for (int i = 0; i < 5; i++)
         { //i = 2, sol = 11
             coolString = "Stage #" + finalStage[i] + "...";
