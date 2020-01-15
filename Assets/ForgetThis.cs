@@ -375,19 +375,19 @@ public class ForgetThis : MonoBehaviour
                     finalStage[4] = finalStage[0];
                     while (finalStage[1] == finalStage[0])
                     {
-                        finalStage[1] = UnityEngine.Random.Range(2, numSolvables);
+                        finalStage[1] = UnityEngine.Random.Range(2, numSolvables + 1);
                     }
                     while (finalStage[2] == finalStage[0] || finalStage[2] == finalStage[1])
                     {
-                        finalStage[2] = UnityEngine.Random.Range(2, numSolvables);
+                        finalStage[2] = UnityEngine.Random.Range(2, numSolvables + 1);
                     }
                     while (finalStage[3] == finalStage[0] || finalStage[3] == finalStage[1] || finalStage[3] == finalStage[2])
                     {
-                        finalStage[3] = UnityEngine.Random.Range(2, numSolvables);
+                        finalStage[3] = UnityEngine.Random.Range(2, numSolvables + 1);
                     }
                     while (finalStage[4] == finalStage[0] || finalStage[4] == finalStage[1] || finalStage[4] == finalStage[2] || finalStage[4] == finalStage[3])
                     {
-                        finalStage[4] = UnityEngine.Random.Range(2, numSolvables);
+                        finalStage[4] = UnityEngine.Random.Range(2, numSolvables + 1);
                     }
                 }
                 else
