@@ -984,7 +984,8 @@ public class ForgetThis : MonoBehaviour
     {
         if (autoSolved)
         {
-            GetComponent<KMBombModule>().HandlePass();
+            //GetComponent<KMBombModule>().HandlePass();
+            StartCoroutine(autosolveDelay());
             canPress = false;
             isSolved = true;
             theLight.enabled = true;
@@ -1007,5 +1008,11 @@ public class ForgetThis : MonoBehaviour
             
 
         }
+    }
+
+    IEnumerator autosolveDelay()
+    {
+        yield return new WaitForSeconds(0.01f);
+        GetComponent<KMBombModule>().HandlePass();
     }
 }
