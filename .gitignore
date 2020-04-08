@@ -30,8 +30,4 @@ sysinfo.txt
 /Assets/Generated.meta
 Assets/Generated
 Gen
-*.blend
-Assets/3x3 Square Bomb.prefab
-Assets/D-Battery.prefab
-Assets/3x3 Square Bomb.prefab.meta
-Assets/D-Battery.prefab.meta
+

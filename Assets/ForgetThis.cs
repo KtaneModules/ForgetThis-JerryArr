@@ -215,13 +215,13 @@ public class ForgetThis : MonoBehaviour
         }
 
 
-        upButton.OnInteract += delegate () { OnPress(); doUp(); upButton.AddInteractionPunch(0.2f); return false; };
-        downButton.OnInteract += delegate () { OnPress(); doDown();  downButton.AddInteractionPunch(0.2f); return false; };
-        centerButton.OnInteract += delegate () { OnPress(); doSubmit();  downButton.AddInteractionPunch(0.2f); return false; };
+        upButton.OnInteract += delegate () { doUp(); upButton.AddInteractionPunch(0.2f); GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, upButton.transform); return false; };
+        downButton.OnInteract += delegate () { doDown();  downButton.AddInteractionPunch(0.2f); GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, downButton.transform); return false; };
+        centerButton.OnInteract += delegate () { doSubmit();  centerButton.AddInteractionPunch(0.2f); GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, centerButton.transform); return false; };
 
-        upButton.OnInteractEnded += delegate () { OnRelease(); };
-        downButton.OnInteractEnded += delegate () { OnRelease(); };
-        centerButton.OnInteractEnded += delegate () { OnRelease(); };
+        upButton.OnInteractEnded += delegate () { GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonRelease, upButton.transform); };
+        downButton.OnInteractEnded += delegate () { GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonRelease, downButton.transform); };
+        centerButton.OnInteractEnded += delegate () { GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonRelease, centerButton.transform); };
         Module.OnActivate += delegate { doActivationStuff(); };
     }
 
@@ -511,8 +511,6 @@ public class ForgetThis : MonoBehaviour
 
 
 
-
-
         if (newIncrement && !(curStageNum == curSolved + 1) && !canSolve && !isSolved && !doRotate && !justAfterStrike)
         {
             if (timeX > 0)
@@ -668,7 +666,7 @@ public class ForgetThis : MonoBehaviour
         
     }
 
-    void OnPress()
+    /**void OnPress()
     {
 
         GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, transform);
@@ -678,12 +676,25 @@ public class ForgetThis : MonoBehaviour
     {
         GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonRelease, transform);
 
+    }*/
+
+    IEnumerator TwitchHandleForcedSolve()
+    {
+        if (justAfterStrike)
+        {
+            yield return ProcessTwitchCommand("reset");
+        }
+        while (!canSolve)
+        {
+            yield return true;
+        }
+        yield return ProcessTwitchCommand("submit "+theValues[theSolution]);
     }
 
-#pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Submit an answer when the module is ready with !{0} (submit/answer) 0. The answer must be a single digit from 0-9 and from A-Z. Use !{0} stage 999 to see a particular stage or !{0} reset to try again after a strike. !{0} colorblind enables colorblind mode.";
+    #pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"Submit an answer when the module is ready with !{0} (submit/answer) 0. The answer must be a single digit from 0-9 and from A-Z. Use !{0} stage 999 to see a particular stage or !{0} reset to try again after a strike. !{0} colorblind toggles colorblind mode.";
     private readonly bool TwitchShouldCancelCommand = false;
-#pragma warning restore 414
+    #pragma warning restore 414
 
     private IEnumerator ProcessTwitchCommand(string command)
     {
@@ -701,7 +712,14 @@ public class ForgetThis : MonoBehaviour
             }
             else if (pieces.Count() >= 1 && pieces[0] == "colorblind")
             {
-                colorblindModeEnabled = true;
+                if (!colorblindModeEnabled)
+                {
+                    colorblindModeEnabled = true;
+                }
+                else
+                {
+                    colorblindModeEnabled = false;
+                }
                 yield return null;
             }
             else if (pieces.Count() == 1 && (pieces[0] == "submit" || pieces[0] == "answer"))
@@ -751,17 +769,20 @@ public class ForgetThis : MonoBehaviour
                             if (tpTicks > 0)
                             {
                                 upButton.OnInteract();
+                                upButton.OnInteractEnded();
                                 tpTicks--;
                             }
                             else
                             {
                                 downButton.OnInteract();
+                                downButton.OnInteractEnded();
                                 tpTicks++;
                             }
                         }
                         yield return new WaitForSeconds(.1f);
                         yield return null;
                         centerButton.OnInteract();
+                        centerButton.OnInteractEnded();
                     }
 
                 }
@@ -788,8 +809,16 @@ public class ForgetThis : MonoBehaviour
             }
             else if (pieces.Count() >= 1 && pieces[0] == "colorblind")
             {
-                colorblindModeEnabled = true;
-                cbmColor.GetComponentInChildren<TextMesh>().text = lightColors[stageColors[curRotation - 1]].Substring(0, 1);
+                if (!colorblindModeEnabled)
+                {
+                    colorblindModeEnabled = true;
+                    cbmColor.GetComponentInChildren<TextMesh>().text = lightColors[stageColors[curRotation - 1]].Substring(0, 1);
+                }
+                else
+                {
+                    colorblindModeEnabled = false;
+                    cbmColor.GetComponentInChildren<TextMesh>().text = "";
+                }
                 yield return null;
             }
             else if (pieces.Count() >= 2 && pieces[0] == "stage")
@@ -819,11 +848,13 @@ public class ForgetThis : MonoBehaviour
                         if (tpTicks > 0)
                         {
                             upButton.OnInteract();
+                            upButton.OnInteractEnded();
                             tpTicks--;
                         }
                         else
                         {
                             downButton.OnInteract();
+                            downButton.OnInteractEnded();
                             tpTicks++;
                         }
                     }
@@ -841,6 +872,7 @@ public class ForgetThis : MonoBehaviour
                 yield return new WaitForSeconds(.1f);
                 yield return null;
                 centerButton.OnInteract();
+                centerButton.OnInteractEnded();
             }
             else
             {
@@ -851,8 +883,16 @@ public class ForgetThis : MonoBehaviour
         }
         else if (pieces.Count() >= 1 && pieces[0] == "colorblind")
         {
-            colorblindModeEnabled = true;
-            cbmColor.GetComponentInChildren<TextMesh>().text = lightColors[stageColors[curStageNum - 1]].Substring(0, 1);
+            if (!colorblindModeEnabled)
+            {
+                colorblindModeEnabled = true;
+                cbmColor.GetComponentInChildren<TextMesh>().text = lightColors[stageColors[curStageNum - 1]].Substring(0, 1);
+            }
+            else
+            {
+                colorblindModeEnabled = false;
+                cbmColor.GetComponentInChildren<TextMesh>().text = "";
+            }
             yield return null;
         }
         else
